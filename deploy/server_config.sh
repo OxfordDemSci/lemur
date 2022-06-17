@@ -13,7 +13,7 @@ sudo apt-get install docker-compose
 sudo apt-get install r-base
 
 #---- swap ----#
-sudo fallocate -l 16G /swapfile
+sudo fallocate -l 64G /swapfile
 sudo chmod 600 /swapfile
 sudo mkswap /swapfile
 sudo swapon /swapfile
@@ -69,7 +69,7 @@ sudo systemctl restart docker
 
 mkdir ~/git
 cd ~/git
-git clone git@github.com:doug-leasure/lemur
+git clone http://github.com/OxfordDemSci/lemur
 
 # deploy
 cd ~/git/lemur
