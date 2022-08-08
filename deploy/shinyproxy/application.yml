@@ -2,7 +2,7 @@ proxy:
   title: Open Analytics Shiny Proxy
   port: 8080
   authentication: none
-  landing-page: /app/lemur
+  landing-page: /app_direct/lemur
   hide-navbar: true
   docker:
       internal-networking: true
