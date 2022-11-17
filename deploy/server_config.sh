@@ -18,7 +18,7 @@ sudo chmod 600 /swapfile
 sudo mkswap /swapfile
 sudo swapon /swapfile
 swapon --show
-sudo cp /etc/fstab /etc/fstab.back
+sudo cp /etc/fstab /etc/fstab.orig
 echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 sudo sysctl vm.swappiness=1
 
@@ -69,6 +69,9 @@ sudo systemctl restart docker
 
 cd ~
 git clone http://github.com/OxfordDemSci/lemur
+
+# NOTE: must now copy data to ~/lemur/deploy/postgresql/ 
+# (data_gbd2019_cod.csv, data_gbd2019_lt.csv, data_gbd2019_sdg.csv)
 
 # deploy
 cd ~/lemur
