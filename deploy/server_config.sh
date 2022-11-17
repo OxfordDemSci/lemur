@@ -67,12 +67,11 @@ sudo systemctl restart docker
 
 # NOTE: first setup a GitHub deploy key for the lemur repository and add it to ~/.ssh/config
 
-mkdir ~/git
-cd ~/git
+cd ~
 git clone http://github.com/OxfordDemSci/lemur
 
 # deploy
-cd ~/git/lemur
+cd ~/lemur
 docker-compose up -d
 
 
