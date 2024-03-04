@@ -1,6 +1,6 @@
 # -------------------------------------------------------------- #
 # Author: Marius D. PASCARIU
-# Last Update: Tue Oct 17 22:41:44 2023
+# Last Update: Mon Jan 29 11:16:13 2024
 # -------------------------------------------------------------- #
 
 #' UI - dashboard page
@@ -42,6 +42,9 @@ top_panel <- function() {
       width = 4,
 
       conditionalPanel(
+        # If the we are in the 'mode_sex' we always do comparisons between 
+        # male and females, therefore these 2 sexes need to be selected and 
+        # present in the data at all times.
         condition = "input.mode != 'mode_sex'",
         shinyWidgets::radioGroupButtons(
           inputId = "sex",
@@ -89,7 +92,9 @@ top_panel <- function() {
           "WITHIN REGION"   = "mode_cod",
           "BETWEEN REGIONS" = "mode_cntr",
           "SEX-GAP"         = "mode_sex",
-          "SDG"             = "mode_sdg"),
+          "SDG"             = "mode_sdg",
+          "SDG2"            = "mode_sdg2"
+          ),
         selected = "mode_cod",
         justified = TRUE,
         size = "sm",
@@ -182,19 +187,16 @@ side_panel <- function() {
     ),
 
     chooseSliderSkin("Flat"),
-    setSliderColor_(rep("black", 20), c(1:20)),
+    setSliderColor_(rep("black", 50), c(1:50)),
 
     conditionalPanel(
-      condition = "input.mode != 'mode_sdg'",
-      sliderInput(
+      condition = "input.mode !== 'mode_sdg' && input.mode !== 'mode_sdg2'",
+      slider_input_(
         inputId = "cod_change",
         label = "Modify the cause-specific risk of dying:",
-        post = "%",
-        value = -10,
-        min = -100,
-        max = 100,
-        step = 5
-      ),
+        value = -10
+        ),
+      
       shinyBS::bsTooltip(
         id = "cod_change",
         title = paste(
@@ -250,211 +252,215 @@ side_panel <- function() {
             label = "NONE",
             style = "width:48%;"
           )
-      )
+      ),
     ),
 
     # Side panel for sdg mode
     conditionalPanel(
       condition = "input.mode == 'mode_sdg'",
       
-      sliderInput(# End Epidemics. Goal: -100% relative to 2015 level
-        inputId = "sdg_3",
-        label   = "AIDS epidemic, tuberculosis, malaria and neglected tropical diseases:",
-        post    = "%",
-        value   = 0,
-        min     = -100,
-        max     = 100,
-        step    = 5
-      ),
-      
-      sliderInput( #Goal: - 33.3% relative to 2015 level
-        inputId = "sdg_4",
-        label   = "Mortality rate attributed to cardiovascular disease, cancer, diabetes or chronic respiratory disease:",
-        post    = "%",
-        value   = 0,
-        min     = -100,
-        max     = 100,
-        step    = 5
-      ),
-      
-      sliderInput(
-        inputId = "sdg_1",
-        label = "Under-five mortality rate:",
-        # post = " per 1000 live births",
-        post = "%",
-        value = 0,
-        min = -100,
-        max = 100,
-        step = 5
-      ),
-        
-      sliderInput(
-        inputId = "sdg_2a",
-        label = "Maternal mortality ratio:",
-        # post = " per 100k",
-        post = "%",
-        value = 0,
-        min = -100,
-        max = 100,
-        step = 5
-      ),
+      #
+      slider_input_(inputId = "sdg_3", label = "AIDS epidemic, tuberculosis, malaria and neglected tropical diseases:"),
+      # End Epidemics. Goal: -100% relative to 2015 level
+      slider_input_(inputId = "sdg_4", label = "Mortality rate attributed to cardiovascular disease, cancer, diabetes or chronic respiratory disease:"),
+      #Goal: - 33.3% relative to 2015 level
+      slider_input_(inputId = "sdg_1", label = "Under-five mortality rate:"),
+      #
+      slider_input_(inputId = "sdg_2a", label = "Maternal mortality ratio:"),
+      # goal 25
+      slider_input_(inputId = "sdg_2b", label = "Neonatal mortality rate:"),
+      # Goal: -50% relative to 2015 level
+      slider_input_(inputId = "sdg_5", label = "Suicide mortality rate:"),
+      # Goal: -50% relative to 2015 level
+      slider_input_(inputId = "sdg_6", label = "Death rate due to road traffic injuries:"),
+      # substantially reduce the number of deaths from pollution
+      slider_input_(inputId = "sdg_7", label = "Mortality due to natural disasters:"),
 
-      sliderInput( # goal 25
-        inputId = "sdg_2b",
-        label = "Neonatal mortality rate:",
-        # post = " per 1000 live births",
-        post = "%",
-        value = 0,
-        min = -100,
-        max = 100,
-        step = 5
-      ),
-
-      sliderInput( # Goal: -50% relative to 2015 level
-        inputId = "sdg_5",
-        label   = "Suicide mortality rate:",
-        post    = "%",
-        value   = 0,
-        min     = -100,
-        max     = 100,
-        step    = 5
-      ),
-
-      sliderInput( # Goal: -50% relative to 2015 level
-        inputId = "sdg_6",
-        label   = "Death rate due to road traffic injuries:",
-        post    = " %",
-        value   = 0,
-        min     = -100,
-        max     = 100,
-        step    = 5
-      ),
-
-      sliderInput( # substantially reduce the number of deaths from pollution
-        inputId = "sdg_7",
-        label   = "Mortality due to natural disasters:",
-        post    = "%",
-        value   = 0,
-        min     = -100,
-        max     = 100,
-        step    = 5
-      ),
-    )
+    ),
+    
+    # ******************************************************************
+    # Side panel for sdg mode
+    conditionalPanel(
+      condition = "input.mode == 'mode_sdg2'",
+      slider_input_(inputId = "sdg2_1", label   = "Cardiovascular Diseases:"),
+      slider_input_(inputId = "sdg2_2", label   = "Chronic Respiratory Diseases:"),
+      slider_input_(inputId = "sdg2_3", label   = "Diabetes:"),
+      slider_input_(inputId = "sdg2_4", label   = "Enteric Infections:"),
+      slider_input_(inputId = "sdg2_5", label   = "Exposure to Forces of Nature:"),
+      slider_input_(inputId = "sdg2_6", label   = "HIV/ AIDS / STD:"),
+      slider_input_(inputId = "sdg2_7", label   = "Injuries (excl. Poisonings):"),
+      slider_input_(inputId = "sdg2_8", label   = "Interpersonal Violence:"),
+      slider_input_(inputId = "sdg2_9", label   = "Kidney Disease:"),
+      slider_input_(inputId = "sdg2_10", label   = "Malaria:"),
+      slider_input_(inputId = "sdg2_11", label   = "Maternal disorders:"),
+      slider_input_(inputId = "sdg2_12", label   = "Neglected Tropical Diseases (excl. Malaria):"),
+      slider_input_(inputId = "sdg2_13", label   = "Neonatal disorders:"),
+      slider_input_(inputId = "sdg2_14", label   = "Neoplasms:"),
+      slider_input_(inputId = "sdg2_15", label   = "Other Communicable:"),
+      slider_input_(inputId = "sdg2_16", label   = "Other Non-Communicable:"),
+      slider_input_(inputId = "sdg2_17", label   = "Poisonings:"),
+      slider_input_(inputId = "sdg2_18", label   = "Respiratory Infections (excl. Tuberculosis):"),
+      slider_input_(inputId = "sdg2_19", label   = "Self-Harm:"),
+      slider_input_(inputId = "sdg2_20", label   = "Transport Injuries:"),
+      slider_input_(inputId = "sdg2_21", label   = "Tuberculosis:"),
+    ),
+    # ******************************************************************
+    
+    # radioGroupButtons(
+    #   inputId = "stack_charts",
+    #   label   = "Stack Charts?!",
+    #   choices = c("NO", "YES"),
+    #   justified = TRUE
+    # )
   )
 }
 
 
 #' @keywords internal
 main_panel <- function() {
-  tagList(
-    fluidRow(
-      column(
-        width = 7,
-        style = 'padding:0px 0px 0px 18px;',
+  
+  # tagList(
+  #   conditionalPanel(
+  #     condition = "input.stack_charts == 'NO'",
+      tagList(
+        chart_1(width_ = 7),
+        chart_2(width_ = 5),
+        chart_3(width_ = 6),
+        chart_4(width_ = 6)
+        )
+  #     )
+  #   ,
+  # 
+  #   conditionalPanel(
+  #     condition = "input.stack_charts == 'YES'",
+  #     tagList(
+  #       fluidRow(chart_1(width_ = 10, height_ = 1.0, offset_ = 1)),
+  #       fluidRow(chart_2(width_ = 10, height_ = 1.1, offset_ = 1)),
+  #       fluidRow(chart_3(width_ = 10, height_ = 1.3, offset_ = 1)),
+  #       fluidRow(chart_4(width_ = 10, height_ = 1.3, offset_ = 1))
+  #     )
+  #   )
+  # )
+}
 
-        boxFrame(
-          style = 'padding:0px',
-          title = tagList(
-            tags$div(
-              "World Map",
-              style = "display: inline-block; font-weight: bold; padding:0px;"
-            )
-          ),
 
-          leafletOutput(
-            outputId = "figure1",
-            height = 381*0.93
-          )
+#' @keywords internal
+chart_1 <- function(width_, height_ = 1, offset_ = 0) {
+  column(
+    width = width_,
+    style = 'padding:0px 0px 0px 18px;',
+    offset = offset_,
+    
+    boxFrame(
+      style = 'padding:0px',
+      title = tagList(
+        tags$div(
+          "World Map",
+          style = "display: inline-block; font-weight: bold; padding:0px;"
         )
       ),
-
-      column(
-        width = 5,
-        style = 'padding:0px;',
-
-        boxFrame(
-          title = boxTitleInput(
-            title = "Difference in Life Expectancy at various ages",
-            db_style = "padding: 0px 0px 0px 340px;",
-            selectInput(
-              inputId = "fig2_x",
-              label = "Ages to be displayed",
-              choices = lemur::data_app_input$x,
-              selected = seq(0, 110, 10),
-              multiple = TRUE
-            )
-          ),
-
-          plotlyOutput(
-            outputId = "figure2",
-            height = 350*0.955
-          )
-        )
-      )
-    ),
-
-    fluidRow(
-      column(
-        width = 6,
-        style = 'padding-right:0px; padding-top:0px; padding-bottom:0px',
-
-        boxFrame(
-          title = boxTitleInput(
-            title = "Cause of Death Distribution",
-            db_style = "padding: 0px 0px 0px 450px;",
-            radioGroupButtons(
-              inputId = "fig3_chart_type",
-              label = "View by:",
-              choices = c("Bar-plot" = "barplot"),
-              justified = TRUE,
-              checkIcon = list(
-                yes = tags$i(class = "fa fa-circle",
-                             style = "color: black"),
-                no = tags$i(class = "fa fa-circle-o")),
-              direction = "vertical"
-            )
-          ),
-
-          plotlyOutput(
-            outputId = "figure3",
-            height = 330
-          )
-        )
-      ),
-
-      column(
-        width = 6,
-        style = 'padding:0px;',
-
-        boxFrame(
-          title = boxTitleInput(
-            title = "Cause of Death / Age Decomposition of the Change in Life Expectancy at Birth",
-            db_style = "padding: 0px 0px 0px 410px;",
-            radioGroupButtons(
-              inputId = "fig4_dim",
-              label = "View by:",
-              choices = c("Age-and-COD" = "both",
-                          "Age" = "age",
-                          "COD" = "cod"),
-              justified = TRUE,
-              checkIcon = list(
-                yes = tags$i(class = "fa fa-circle",
-                             style = "color: black"),
-                no = tags$i(class = "fa fa-circle-o")),
-              direction = "vertical"
-            )
-          ),
-
-          plotlyOutput(
-            outputId = "figure4",
-            height = 330
-          )
-        )
+      
+      leafletOutput(
+        outputId = "figure1",
+        height = 354.33 * height_
       )
     )
   )
 }
 
+#' @keywords internal
+chart_2 <- function(width_, height_ = 1, offset_ = 0) {
+  column(
+    width = width_,
+    style = 'padding:0px;',
+    offset = offset_,
+    
+    boxFrame(
+      title = boxTitleInput(
+        title = "Difference in Life Expectancy at various ages",
+        db_style = "padding: 0px 0px 0px 340px;",
+        selectInput(
+          inputId = "fig2_x",
+          label = "Ages to be displayed",
+          choices = lemur::data_app_input$x,
+          selected = seq(0, 110, 10),
+          multiple = TRUE
+        )
+      ),
+      
+      plotlyOutput(
+        outputId = "figure2",
+        height = 332.7 * height_
+      )
+    )
+  )
+}
+
+#' @keywords internal
+chart_3 <- function(width_, height_ = 1, offset_ = 0) {
+  column(
+    width = width_,
+    style = 'padding-right:0px; padding-top:0px; padding-bottom:0px',
+    offset = offset_,
+    
+    boxFrame(
+      title = boxTitleInput(
+        title = "Cause of Death Distribution",
+        db_style = "padding: 0px 0px 0px 450px;",
+        radioGroupButtons(
+          inputId = "fig3_chart_type",
+          label = "View by:",
+          choices = c("Bar-plot" = "barplot"),
+          justified = TRUE,
+          checkIcon = list(
+            yes = tags$i(class = "fa fa-circle",
+                         style = "color: black"),
+            no = tags$i(class = "fa fa-circle-o")),
+          direction = "vertical"
+        )
+      ),
+      
+      plotlyOutput(
+        outputId = "figure3",
+        height = 330 * height_
+      )
+    )
+  )
+}
+
+#' @keywords internal
+chart_4 <- function(width_, height_ = 1, offset_ = 0) {
+  column(
+    width = width_,
+    style = 'padding:0px;',
+    offset = offset_,
+    
+    boxFrame(
+      title = boxTitleInput(
+        title = "Cause of Death / Age Decomposition of the Change in Life Expectancy at Birth",
+        db_style = "padding: 0px 0px 0px 410px;",
+        radioGroupButtons(
+          inputId = "fig4_dim",
+          label = "View by:",
+          choices = c("Age-and-COD" = "both",
+                      "Age" = "age",
+                      "COD" = "cod"),
+          justified = TRUE,
+          checkIcon = list(
+            yes = tags$i(class = "fa fa-circle",
+                         style = "color: black"),
+            no = tags$i(class = "fa fa-circle-o")),
+          direction = "vertical"
+        )
+      ),
+      
+      plotlyOutput(
+        outputId = "figure4",
+        height = 330 * height_
+      )
+    )
+  )
+}
 
 #' @keywords internal
 boxFrame <- function(...,
@@ -496,6 +502,26 @@ boxTitleInput <- function(title, db_style, ...) {
   )
 }
 
+#' @keywords internal
+slider_input_ <- function(
+    inputId, 
+    label, 
+    post    = "%",
+    value   = 0,
+    min     = -100,
+    max     = 100,
+    step    = 1
+    ) {
+  sliderInput(
+    inputId = inputId,
+    label   = label,
+    post    = post,
+    value   = value,
+    min     = min,
+    max     = max,
+    step    = step
+  )
+}
 
 
 
